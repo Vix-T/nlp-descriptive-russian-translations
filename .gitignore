@@ -1,0 +1,18 @@
+# macOS system files
+.DS_Store
+
+# Ignore temporary office files
+~$*
+
+# Ignore output files from scripts
+*.csv
+*.json
+*.png
+*.pdf
+*.docx
+
+# Ignore compiled code or external tools
+mfinder_mac/
+
+# Ignore specific output files
+Ru*_mfinder_input_OUT.txt
