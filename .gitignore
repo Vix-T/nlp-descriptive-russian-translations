@@ -4,6 +4,19 @@
 # Ignore temporary office files
 ~$*
 
+# Ignore raw text files
+Ru*.txt
+
+# Ignore cleaned text files
+Ru*_clean.txt
+Ru*_clean_nostops.txt
+
+# Ignore feature files
+Ru*_features.json
+
+# Ignore mfinder input files
+Ru*_mfinder_input.txt
+
 # Ignore output files from scripts
 *.csv
 *.json
