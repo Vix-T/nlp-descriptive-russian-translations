@@ -13,6 +13,8 @@
 
 # Ignore compiled code or external tools
 mfinder_mac/
+Presentations/
 
 # Ignore specific output files
 Ru*_mfinder_input_OUT.txt
+*_OUT.txt
