@@ -13,7 +13,7 @@ def parse_text_file(file_path: str) -> str:
             print(f"📄 Reading {os.path.basename(file_path)}...")
             return file.read()
     except FileNotFoundError:
-        print(f"❌ ERROR: The file was not found at '{file_path}'")
+        print(f"ERROR: The file was not found at '{file_path}'")
         return ""
 
 def clean_text(text: str) -> str:
@@ -42,9 +42,9 @@ def save_cleaned_text(output_path: str, tokens: list):
         final_text = ' '.join(tokens)
         with open(output_path, 'w', encoding='utf-8') as file:
             file.write(final_text)
-        print(f"💾 Successfully saved cleaned text to {os.path.basename(output_path)}")
+        print(f"Successfully saved cleaned text to {os.path.basename(output_path)}")
     except Exception as e:
-        print(f"❌ An error occurred while saving the file: {e}")
+        print(f"An error occurred while saving the file: {e}")
 
 # --- Main processing loop ---
 if __name__ == '__main__':

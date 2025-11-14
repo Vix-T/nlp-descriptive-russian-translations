@@ -1,6 +1,8 @@
 import json
 import os
 
+# this script is designed to take in the 
+
 def create_mfinder_input_files(directory: str = '.'):
     """
     Reads feature files, converts bigram data to mfinder's edge list format,
@@ -22,7 +24,7 @@ def create_mfinder_input_files(directory: str = '.'):
         
         bigram_freqs = data.get('bigram_frequencies')
         if not bigram_freqs:
-            print(f"❌ No bigram data found for {book_name}. Skipping.")
+            print(f"No bigram data found for {book_name}. Skipping.")
             continue
 
         # 2. Create vocabulary and word-to-ID mapping
@@ -41,19 +43,17 @@ def create_mfinder_input_files(directory: str = '.'):
         with open(mfinder_output_path, 'w', encoding='utf-8') as f:
             for bigram, weight in bigram_freqs.items():
                 word1, word2 = bigram.split('_')
-                
-                # --- THIS IS THE FIX ---
+              
                 # If the words in the bigram are the same, skip this entry.
                 if word1 == word2:
                     self_edge_count += 1
                     continue
-                # --- END OF FIX ---
                 
                 id1 = word_to_id[word1]
                 id2 = word_to_id[word2]
                 f.write(f"{id1} {id2} {weight}\n")
         
-        print(f"✅ Created mfinder input file: {mfinder_output_path}")
+        print(f"Created mfinder input file: {mfinder_output_path}")
         if self_edge_count > 0:
             print(f"   (Removed {self_edge_count} self-edges)")
 
@@ -62,7 +62,7 @@ def create_mfinder_input_files(directory: str = '.'):
         with open(mapping_output_path, 'w', encoding='utf-8') as f:
             json.dump(word_to_id, f, ensure_ascii=False, indent=4)
             
-        print(f"✅ Saved word-to-ID map: {mapping_output_path}")
+        print(f"Saved word-to-ID map: {mapping_output_path}")
 
 if __name__ == '__main__':
     create_mfinder_input_files()

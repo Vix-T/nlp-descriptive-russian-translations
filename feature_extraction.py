@@ -14,7 +14,7 @@ def read_tokens_from_file(file_path: str) -> list:
         with open(file_path, 'r', encoding='utf-8') as f:
             return f.read().split()
     except FileNotFoundError:
-        print(f"❌ ERROR: File not found at '{file_path}'")
+        print(f"ERROR: File not found at '{file_path}'")
         return None
 
 def sanitize_dict_for_json(obj):
@@ -43,9 +43,9 @@ def save_features_to_json(features: dict, output_path: str):
         # No custom encoder needed as the dictionary is already sanitized
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(features, f, ensure_ascii=False, indent=4)
-        print(f"✅ Features successfully saved to {output_path}")
+        print(f"Features successfully saved to {output_path}")
     except Exception as e:
-        print(f"❌ ERROR saving JSON: {e}")
+        print(f"ERROR saving JSON: {e}")
 
 # --- Feature Extraction Functions (These are unchanged) ---
 

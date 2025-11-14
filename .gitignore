@@ -27,6 +27,7 @@ Ru*_mfinder_input.txt
 # Ignore compiled code or external tools
 mfinder_mac/
 Presentations/
+RuOops/
 
 # Ignore specific output files
 Ru*_mfinder_input_OUT.txt

@@ -19,7 +19,7 @@ def plot_similarity_heatmap(similarity_df: pd.DataFrame, output_filename: str, p
     plt.title(plot_title, fontsize=16)
     plt.tight_layout()
     plt.savefig(output_filename)
-    print(f"✅ Similarity heatmap saved to '{output_filename}'")
+    print(f"Similarity heatmap saved to '{output_filename}'")
 
 
 def generate_pca_and_similarity(dtm_filepath: str, pca_plot_filename: str, heatmap_filename: str, plot_title_prefix: str):
@@ -32,9 +32,9 @@ def generate_pca_and_similarity(dtm_filepath: str, pca_plot_filename: str, heatm
     # Step 1: Load the DTM
     try:
         dtm = pd.read_csv(dtm_filepath, index_col=0)
-        print(f"✅ Loaded DTM from '{dtm_filepath}'.")
+        print(f"Loaded DTM from '{dtm_filepath}'.")
     except FileNotFoundError:
-        print(f"❌ ERROR: File not found at '{dtm_filepath}'.")
+        print(f"ERROR: File not found at '{dtm_filepath}'.")
         return
 
     # --- PCA Calculation and Visualization ---
@@ -60,7 +60,7 @@ def generate_pca_and_similarity(dtm_filepath: str, pca_plot_filename: str, heatm
     plt.axvline(0, color='grey', linestyle='--')
     plt.grid()
     plt.savefig(pca_plot_filename)
-    print(f"✅ PCA plot saved to '{pca_plot_filename}'")
+    print(f"PCA plot saved to '{pca_plot_filename}'")
     
     # --- Cosine Similarity Matrix and Heatmap ---
     similarity_matrix = cosine_similarity(dtm)
