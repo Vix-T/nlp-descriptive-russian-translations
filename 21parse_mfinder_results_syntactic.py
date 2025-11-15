@@ -10,7 +10,7 @@ def parse_members_file(filepath):
     Returns a dictionary: { "motif_id": [ (n1,n2,n3), (n4,n5,n6), ... ] }
     """
     if not os.path.exists(filepath):
-        print(f"❌ ERROR: Members file not found at '{filepath}'")
+        print(f"ERROR: Members file not found at '{filepath}'")
         return None
 
     motif_data = defaultdict(list)
@@ -22,19 +22,16 @@ def parse_members_file(filepath):
             for line in f:
                 line = line.strip()
 
-                # 1. Look for the motif ID in the header
                 if line.startswith("subgraph id ="):
                     header_parts = line.split()
                     if len(header_parts) == 4:
                         current_motif_id = header_parts[3] # Get the '6', '8', etc.
                     continue 
 
-                # 2. Look for the start of the data list
                 if "members:" in line:
                     data_started = True
                     continue 
 
-                # 3. If we are in the data section, process lines
                 if data_started and current_motif_id:
                     parts = line.split()
                     if len(parts) == 3: # Data lines have 3 node IDs
@@ -45,24 +42,24 @@ def parse_members_file(filepath):
                             continue # Skip any non-integer 3-part lines
     
     except Exception as e:
-        print(f"❌ ERROR: Failed to parse members file: {e}")
+        print(f"ERROR: Failed to parse members file: {e}")
         return None
 
     if not motif_data:
-        print(f"⚠️ WARNING: No motif data found in {filepath}")
+        print(f"WARNING: No motif data found in {filepath}")
 
     return motif_data
 
 def load_mapping(filepath):
     """Loads the word-to-ID JSON mapping file."""
     if not os.path.exists(filepath):
-        print(f"❌ ERROR: Mapping file not found at '{filepath}'")
+        print(f"ERROR: Mapping file not found at '{filepath}'")
         return None
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             return json.load(f)
     except Exception as e:
-        print(f"❌ ERROR: Failed to load JSON mapping: {e}")
+        print(f"ERROR: Failed to load JSON mapping: {e}")
         return None
 
 def create_reverse_mapping(word_to_id_map):
@@ -75,11 +72,9 @@ def create_reverse_mapping(word_to_id_map):
     return id_to_word_map
 
 # --- Main Execution Block ---
-# This is the only part that has been changed.
 if __name__ == "__main__":
     book_prefixes = ["Ru1", "Ru2", "Ru3", "Ru4", "Ru5"]
     
-    # --- CHANGE 1: Define the subfolder ---
     data_folder = pathlib.Path("syntactic-analysis")
     
     print("--- Starting Syntactic Analysis Report Generation ---")
@@ -87,13 +82,10 @@ if __name__ == "__main__":
     for prefix in book_prefixes:
         print(f"\n--- Processing {prefix} ---")
         
-        # --- CHANGE 2: Update file paths ---
         members_file = data_folder / f"{prefix}_syntactic_output_MEMBERS.txt"
         mapping_file = data_folder / f"{prefix}_syntactic_mapping.json"
         output_file = data_folder / f"{prefix}_syntactic_analysis_report.txt"
-        # --- END OF CHANGES ---
 
-        # 2. Load Word-to-ID map and create reverse (ID-to-Word) map
         word_map = load_mapping(mapping_file)
         if not word_map:
             print(f"   Skipping {prefix} due to missing mapping file.")
@@ -102,7 +94,6 @@ if __name__ == "__main__":
         id_map = create_reverse_mapping(word_map)
         print(f"   Loaded mapping: {len(id_map)} words.")
         
-        # 3. Parse the .members file to get ID clusters
         motif_id_data = parse_members_file(members_file)
         if not motif_id_data:
             print(f"   Skipping {prefix} due to missing members file or parse error.")
@@ -110,16 +101,12 @@ if __name__ == "__main__":
         
         print(f"   Found {len(motif_id_data)} motif types in {members_file.name}.")
         
-        # 4. Translate ID clusters to Word clusters and save
         try:
             with open(output_file, 'w', encoding='utf-8') as f:
                 for motif_id, id_tuples in sorted(motif_id_data.items(), key=lambda item: int(item[0])):
                     
-                    # --- This is the key logic from the conceptual script ---
-                    # A) Get Total Occurrences
                     total_occurrences = len(id_tuples)
                     
-                    # B) Get Unique Clusters
                     word_clusters = []
                     for id_tuple in id_tuples:
                         try:
@@ -128,15 +115,13 @@ if __name__ == "__main__":
                             w3 = id_map[id_tuple[2]]
                             word_clusters.append(tuple(sorted((w1, w2, w3))))
                         except KeyError as e:
-                            print(f"   ⚠️ WARNING: Could not find word for ID {e} in {prefix}")
+                            print(f"   WARNING: Could not find word for ID {e} in {prefix}")
                     
                     unique_clusters = set(word_clusters)
                     unique_count = len(unique_clusters)
                     
-                    # C) Get Frequency List
                     cluster_frequencies = Counter(word_clusters)
                     top_20_clusters = cluster_frequencies.most_common(20)
-                    # --- End of key logic ---
 
                     # Write the new, consistent report format
                     f.write(f"========================================\n")
@@ -150,9 +135,9 @@ if __name__ == "__main__":
                         f.write(f"  Count: {count}\tWords: {w1}, {w2}, {w3}\n")
                     f.write(f"========================================\n\n")
             
-            print(f"✅ Successfully saved report to {output_file}")
+            print(f"Successfully saved report to {output_file}")
             
         except Exception as e:
-            print(f"❌ ERROR: Failed to write output file: {e}")
+            print(f"ERROR: Failed to write output file: {e}")
 
     print("\n--- All syntactic reports generated. ---")

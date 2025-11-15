@@ -36,7 +36,7 @@ def plot_summary_metrics_greyscale(df: pd.DataFrame):
     plt.xticks(rotation=45, ha='right') # Rotate labels to prevent overlap
     plt.tight_layout()
     plt.savefig('ttr_comparison_greyscale_labeled.png')
-    print("✅ Saved labeled greyscale TTR plot to ttr_comparison_greyscale_labeled.png")
+    print("Saved labeled greyscale TTR plot to ttr_comparison_greyscale_labeled.png")
 
     # --- Plot 2: Sentence Length in Greyscale with Custom Labels ---
     plt.figure(figsize=(10, 6))
@@ -52,7 +52,7 @@ def plot_summary_metrics_greyscale(df: pd.DataFrame):
     plt.xticks(rotation=45, ha='right') # Rotate labels to prevent overlap
     plt.tight_layout()
     plt.savefig('sentence_length_comparison_greyscale_labeled.png')
-    print("✅ Saved labeled greyscale sentence length plot to sentence_length_comparison_greyscale_labeled.png")
+    print("Saved labeled greyscale sentence length plot to sentence_length_comparison_greyscale_labeled.png")
 
 
 if __name__ == '__main__':
@@ -61,4 +61,4 @@ if __name__ == '__main__':
         summary_df = pd.read_csv(summary_csv_path).set_index('translation')
         plot_summary_metrics_greyscale(summary_df)
     else:
-        print(f"❌ Error: '{summary_csv_path}' not found.")
+        print(f"Error: '{summary_csv_path}' not found.")

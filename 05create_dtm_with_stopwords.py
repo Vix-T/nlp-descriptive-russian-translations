@@ -38,14 +38,14 @@ def create_dtm_with_stopwords(directory: str = '.') -> pd.DataFrame:
         # Use 'unigram_frequencies' which includes all words
         unigram_data = data.get('unigram_frequencies')
         if not unigram_data:
-            print(f"⚠️  No unigram frequency data found for {book_name}. Skipping.")
+            print(f"No unigram frequency data found for {book_name}. Skipping.")
             continue
         
         all_word_freqs[new_label] = unigram_data
         master_word_list.update(unigram_data.keys())
         
     if not all_word_freqs:
-        print("❌ No feature files found or parsed. Cannot create DTM.")
+        print("No feature files found or parsed. Cannot create DTM.")
         return pd.DataFrame()
 
     print(f"Found a total of {len(master_word_list)} unique words across all documents.")
@@ -62,9 +62,9 @@ if __name__ == '__main__':
     document_term_matrix = create_dtm_with_stopwords()
     
     if not document_term_matrix.empty:
-        # Save the DTM to a new CSV file
-        document_term_matrix.to_csv('document_term_matrix_with_stops.csv')
+        output_filename = 'dtm_all_words.csv'
+        document_term_matrix.to_csv(output_filename)
         
         print("\n--- DTM with Stop Words (First 5 Rows & 10 Columns) ---")
         print(document_term_matrix.iloc[:5, :10])
-        print("\n✅ DTM with stop words saved to 'document_term_matrix_with_stops.csv'")
+        print(f"\nDTM with stop words saved to '{output_filename}'")

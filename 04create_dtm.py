@@ -11,10 +11,10 @@ label_mapping = {
     'Ru5': 'Ru-1960-Daruzes'
 }
 
-def create_correct_dtm_without_stopwords(directory: str = '.') -> pd.DataFrame:
+def create_dtm_without_stopwords(directory: str = '.') -> pd.DataFrame:
     """
-    Creates a CORRECT Document-Term Matrix from the full content word lists
-    in the '*_clean_nostops.txt' files.
+    Creates a Document-Term Matrix from the lemmatized content word lists
+    in the '*_clean_lemmatized_nostops.txt' files.
 
     Args:
         directory (str): The directory containing the text files.
@@ -22,14 +22,15 @@ def create_correct_dtm_without_stopwords(directory: str = '.') -> pd.DataFrame:
     Returns:
         pd.DataFrame: The resulting Document-Term Matrix.
     """
-    print("--- Creating CORRECTED Document-Term Matrix (without stop words) ---")
+    print("--- Creating DTM (from lemmatized, no-stop-words files) ---")
     
     all_word_freqs = {}
 
     # Find and process the correct source files
     for i in range(1, 6):
         book_name = f"Ru{i}"
-        filename = f"{book_name}_clean_nostops.txt"
+        # --- FIXED: Using the correct input filename from our pipeline ---
+        filename = f"{book_name}_clean_lemmatized_nostops.txt"
         file_path = os.path.join(directory, filename)
         
         new_label = label_mapping.get(book_name, book_name)
@@ -40,14 +41,14 @@ def create_correct_dtm_without_stopwords(directory: str = '.') -> pd.DataFrame:
             
             # Get the frequency counts for this document
             all_word_freqs[new_label] = Counter(tokens)
-            print(f"✅ Processed {filename} with {len(tokens)} total content words.")
+            print(f"Processed {filename} with {len(tokens)} total content words.")
 
         except FileNotFoundError:
-            print(f"❌ ERROR: Source file not found: {filename}")
+            print(f"ERROR: Source file not found: {filename}")
             continue
             
     if not all_word_freqs:
-        print("❌ No source files found. Cannot create DTM.")
+        print("ERROR: No source files found. Cannot create DTM.")
         return pd.DataFrame()
 
     # Create the DataFrame (DTM) from the collected frequency counts
@@ -59,13 +60,13 @@ def create_correct_dtm_without_stopwords(directory: str = '.') -> pd.DataFrame:
     return dtm
 
 if __name__ == '__main__':
-    # This will create the new, correct DTM
-    document_term_matrix = create_correct_dtm_without_stopwords()
+    document_term_matrix = create_dtm_without_stopwords()
     
     if not document_term_matrix.empty:
-        # Overwrite the old, flawed DTM file
-        document_term_matrix.to_csv('document_term_matrix.csv')
+        # --- FIXED: Using the output filename from your workflow plan ---
+        output_filename = 'dtm_content_words.csv'
+        document_term_matrix.to_csv(output_filename)
         
-        print("\n--- Corrected Document-Term Matrix (First 5 Rows & 10 Columns) ---")
+        print("\n--- DTM (First 5 Rows & 10 Columns) ---")
         print(document_term_matrix.iloc[:5, :10])
-        print("\n✅ CORRECTED Document-Term Matrix saved to 'document_term_matrix.csv'")
+        print(f"\nDTM saved to '{output_filename}'")

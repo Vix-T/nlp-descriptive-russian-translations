@@ -1,3 +1,6 @@
+# Python virtual environment
+/.venv
+
 # macOS system files
 .DS_Store
 
@@ -7,7 +10,11 @@
 # Ignore raw text files
 Ru*.txt
 
-# Ignore cleaned text files
+# Ignore cleaned text files (New Pipeline)
+Ru*_clean_lemmatized.txt
+Ru*_clean_lemmatized_nostops.txt
+
+# --- Old file patterns (can be kept or deleted) ---
 Ru*_clean.txt
 Ru*_clean_nostops.txt
 

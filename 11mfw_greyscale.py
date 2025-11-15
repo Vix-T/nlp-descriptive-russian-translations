@@ -31,7 +31,7 @@ def plot_mfw_greyscale_barchart(words: list, counts: list, plot_title: str, outp
     plt.savefig(output_filename)
     # Close the plot to free up memory before the next one is created
     plt.close()
-    print(f"✅ Saved plot to {output_filename}")
+    print(f"Saved plot to {output_filename}")
 
 
 if __name__ == '__main__':

@@ -13,16 +13,17 @@ def generate_cluster_analysis_greyscale(dtm_filepath: str, output_filename: str,
     # Step 1: Load the Document-Term Matrix
     try:
         dtm = pd.read_csv(dtm_filepath, index_col=0)
-        print(f"✅ Loaded DTM from '{dtm_filepath}'.")
+        print(f"Loaded DTM from '{dtm_filepath}'.")
     except FileNotFoundError:
-        print(f"❌ ERROR: File not found at '{dtm_filepath}'.")
+        print(f"ERROR: File not found at '{dtm_filepath}'.")
         return
 
     # Step 2: Calculate the stylistic distance between documents.
-    # Using the direct cosine_distances function from your original script.
+    # Using the direct cosine_distances function.
     dist_matrix = cosine_distances(dtm)
     
     # Step 3: Perform Hierarchical Clustering.
+    # Note: 'ward' linkage requires a distance matrix (which this is).
     linkage_matrix = linkage(dist_matrix, method='ward')
 
     # Step 4: Create and save the greyscale dendrogram visualization
@@ -41,20 +42,20 @@ def generate_cluster_analysis_greyscale(dtm_filepath: str, output_filename: str,
     plt.tight_layout()
     
     plt.savefig(output_filename)
-    print(f"✅ Greyscale dendrogram saved to '{output_filename}'")
+    print(f"Greyscale dendrogram saved to '{output_filename}'")
 
 
 if __name__ == '__main__':
     # --- Analysis 1: WITHOUT Stop Words ---
     generate_cluster_analysis_greyscale(
-        dtm_filepath='document_term_matrix.csv',
+        dtm_filepath='dtm_content_words.csv',
         output_filename='cosine_cluster_no_stopwords_greyscale.png',
         plot_title='Cluster Analysis (Content Words Only)'
     )
     
     # --- Analysis 2: WITH Stop Words ---
     generate_cluster_analysis_greyscale(
-        dtm_filepath='document_term_matrix_with_stops.csv',
+        dtm_filepath='dtm_all_words.csv',
         output_filename='cosine_cluster_with_stopwords_greyscale.png',
         plot_title='Cluster Analysis (All Words, Including Stop Words)'
     )

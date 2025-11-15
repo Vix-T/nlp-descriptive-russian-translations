@@ -1,15 +1,20 @@
 import json
 import os
 
-# this script is designed to take in the 
-
 def create_mfinder_input_files(directory: str = '.'):
     """
     Reads feature files, converts bigram data to mfinder's edge list format,
-    REMOVING SELF-LOOPS, and saves the corresponding input and mapping files.
+    REMOVING SELF-LOOPS, and saves the corresponding input and mapping files
+    into the 'conceptual-analysis' sub-directory.
     """
-    print("--- Preparing input files for mfinder (v2 - No Self-Edges) ---")
+    print("--- Preparing input files for mfinder (Conceptual Network) ---")
     
+    # --- NEW: Define and create the output directory ---
+    output_dir = "conceptual-analysis"
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+        print(f"Created directory: {output_dir}")
+        
     json_files = [f for f in os.listdir(directory) if f.endswith('_features.json')]
 
     for filename in sorted(json_files):
@@ -38,7 +43,8 @@ def create_mfinder_input_files(directory: str = '.'):
         word_to_id = {word: i + 1 for i, word in enumerate(sorted_vocab)}
 
         # 3. Write the mfinder input file, SKIPPING self-edges
-        mfinder_output_path = f"{book_name}_mfinder_input.txt"
+        # --- FIXED: Save file inside the correct sub-directory ---
+        mfinder_output_path = os.path.join(output_dir, f"{book_name}_mfinder_input.txt")
         self_edge_count = 0
         with open(mfinder_output_path, 'w', encoding='utf-8') as f:
             for bigram, weight in bigram_freqs.items():
@@ -58,7 +64,8 @@ def create_mfinder_input_files(directory: str = '.'):
             print(f"   (Removed {self_edge_count} self-edges)")
 
         # 4. Save the word-to-ID mapping
-        mapping_output_path = f"{book_name}_word_id_mapping.json"
+        # --- FIXED: Save file inside the correct sub-directory ---
+        mapping_output_path = os.path.join(output_dir, f"{book_name}_word_id_mapping.json")
         with open(mapping_output_path, 'w', encoding='utf-8') as f:
             json.dump(word_to_id, f, ensure_ascii=False, indent=4)
             

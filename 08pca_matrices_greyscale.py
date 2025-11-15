@@ -34,7 +34,7 @@ def generate_pca_and_similarity_greyscale(dtm_filepath: str, pca_plot_filename: 
         dtm = pd.read_csv(dtm_filepath, index_col=0)
         print(f"Loaded DTM from '{dtm_filepath}'.")
     except FileNotFoundError:
-        print(f"❌ ERROR: File not found at '{dtm_filepath}'.")
+        print(f"ERROR: File not found at '{dtm_filepath}'.")
         return
 
     # --- PCA Calculation and Greyscale Visualization ---
@@ -83,7 +83,8 @@ def generate_pca_and_similarity_greyscale(dtm_filepath: str, pca_plot_filename: 
 if __name__ == '__main__':
     # --- Analysis 1: WITHOUT Stop Words ---
     generate_pca_and_similarity_greyscale(
-        dtm_filepath='document_term_matrix.csv',
+        # --- FIXED: Using correct input file from our pipeline ---
+        dtm_filepath='dtm_content_words.csv',
         pca_plot_filename='pca_analysis_no_stopwords_greyscale.png',
         heatmap_filename='similarity_heatmap_no_stopwords_greyscale.png',
         plot_title_prefix='Content Words Only'
@@ -91,7 +92,8 @@ if __name__ == '__main__':
     
     # --- Analysis 2: WITH Stop Words ---
     generate_pca_and_similarity_greyscale(
-        dtm_filepath='document_term_matrix_with_stops.csv',
+        # --- FIXED: Using correct input file from our pipeline ---
+        dtm_filepath='dtm_all_words.csv',
         pca_plot_filename='pca_analysis_with_stopwords_greyscale.png',
         heatmap_filename='similarity_heatmap_with_stopwords_greyscale.png',
         plot_title_prefix='All Words, Including Stop Words'

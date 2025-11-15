@@ -1,16 +1,13 @@
 import re
 import pymorphy2
-import os # Import the os module to handle file paths
+import os
 
-#
-# Scripts to prepare text data for analysis.
-#
 
 def parse_text_file(file_path: str) -> str:
     """Reads a text file and returns its contents as a single string."""
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
-            print(f"📄 Reading {os.path.basename(file_path)}...")
+            print(f"Reading {os.path.basename(file_path)}...")
             return file.read()
     except FileNotFoundError:
         print(f"ERROR: The file was not found at '{file_path}'")
@@ -69,7 +66,7 @@ if __name__ == '__main__':
             lemmatized_tokens = lemmatize_text(cleaned_book_text)
             
             # 5. Define the output filename and save the result
-            output_filename = filename.replace('.txt', '_clean.txt')
+            output_filename = filename.replace('.txt', '_clean_lemmatized.txt')
             save_cleaned_text(output_filename, lemmatized_tokens)
             
     print("\n--- All files processed successfully! ---")

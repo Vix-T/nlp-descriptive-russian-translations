@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import math
+import csv
 from collections import Counter
 
 def calculate_yules_k(tokens: list):
@@ -42,29 +43,32 @@ if __name__ == "__main__":
     output_csv_file = 'lexical_diversity_results.csv'
     header = ['Filename', 'Yules_K', 'Honores_W']
     
-    # Find all lemmatized files with stopwords removed
-    files_to_analyze = [f for f in os.listdir('.') if f.startswith('Ru') and f.endswith('_clean_nostops.txt')]
+    # --- FIXED: Using the correct input files from our pipeline ---
+    files_to_analyze = [f for f in os.listdir('.') if f.startswith('Ru') and f.endswith('_clean_lemmatized_nostops.txt')]
     
     if not files_to_analyze:
-        print("❌ No 'Ru#_clean_nostops.txt' files found in this directory.")
+        print(f"ERROR: No '{files_to_analyze}' files found in this directory.")
     else:
         print(f"Found {len(files_to_analyze)} files. Starting analysis...")
-        with open(output_csv_file, 'w', newline='', encoding='utf-8') as f:
-            writer = pd.DataFrame(columns=header)
-            writer.to_csv(output_csv_file, index=False)
-            
-            for filename in sorted(files_to_analyze):
-                print(f"--- Analyzing '{filename}' ---")
-                with open(filename, 'r', encoding='utf-8') as text_file:
-                    tokens = text_file.read().split()
-                    
-                    yules_k = calculate_yules_k(tokens)
-                    honores_w = calculate_honores_w(tokens)
-                    
-                    print(f"  Yule's K: {yules_k:.4f}")
-                    print(f"  Honoré's W: {honores_w:.4f}\n")
-                    
-                    results_df = pd.DataFrame([[filename, yules_k, honores_w]], columns=header)
-                    results_df.to_csv(output_csv_file, mode='a', header=False, index=False)
         
-        print(f"✅ All analyses are complete. Results have been saved to '{output_csv_file}'")
+        all_results = []
+        for filename in sorted(files_to_analyze):
+            print(f"--- Analyzing '{filename}' ---")
+            with open(filename, 'r', encoding='utf-8') as text_file:
+                tokens = text_file.read().split()
+                
+                yules_k = calculate_yules_k(tokens)
+                honores_w = calculate_honores_w(tokens)
+                
+                print(f"  Yule's K: {yules_k:.4f}")
+                print(f"  Honoré's W: {honores_w:.4f}\n")
+                all_results.append([filename, yules_k, honores_w])
+        
+        # Write to CSV
+        with open(output_csv_file, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow(header)
+            for row in all_results:
+                writer.writerow(row)
+        
+        print(f"All analyses are complete. Results have been saved to '{output_csv_file}'")

@@ -29,7 +29,7 @@ def load_features_to_dataframe(directory: str = '.') -> pd.DataFrame:
                 all_features_list.append(data)
     
     if not all_features_list:
-        print("❌ No feature files found. Make sure the script is in the same directory as your JSON files.")
+        print("ERROR: No feature files found. Make sure the script is in the same directory as your JSON files.")
         return pd.DataFrame()
 
     # Create the initial DataFrame from our list of dictionaries
@@ -48,8 +48,12 @@ def load_features_to_dataframe(directory: str = '.') -> pd.DataFrame:
         'bigram_entropy'
     ]
     
+    # Filter out columns that might not exist (in case a feature wasn't calculated)
+    # This makes the script more robust.
+    existing_summary_columns = [col for col in summary_columns if col in df.columns]
+    
     # Reorder the DataFrame with our selected columns and set the index
-    summary_df = df[summary_columns].set_index('translation')
+    summary_df = df[existing_summary_columns].set_index('translation')
     
     # Sort the DataFrame by translation name (Ru1, Ru2, etc.)
     summary_df = summary_df.sort_index()
@@ -58,7 +62,7 @@ def load_features_to_dataframe(directory: str = '.') -> pd.DataFrame:
 
 # --- Main Execution Block ---
 if __name__ == '__main__':
-    print("📊 Loading features into a pandas DataFrame...")
+    print("Loading features into a pandas DataFrame...")
     
     # Create the summary DataFrame
     features_df = load_features_to_dataframe()
@@ -68,6 +72,6 @@ if __name__ == '__main__':
         print("\n--- Stylometric Feature Summary ---")
         print(features_df)
         
-        # You can also save this summary table to a CSV file
+        # Save this summary table to a CSV file
         features_df.to_csv('stylometric_summary.csv')
-        print("\n✅ Summary table saved to 'stylometric_summary.csv'")
+        print("\nSummary table saved to 'stylometric_summary.csv'")

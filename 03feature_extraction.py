@@ -47,7 +47,7 @@ def save_features_to_json(features: dict, output_path: str):
     except Exception as e:
         print(f"ERROR saving JSON: {e}")
 
-# --- Feature Extraction Functions (These are unchanged) ---
+# --- Feature Extraction Functions ---
 
 def get_ngram_freqs(tokens: list, n: int) -> Counter:
     if len(tokens) < n: return Counter()
@@ -75,9 +75,11 @@ def calculate_avg_sentence_length(original_file_path: str) -> float:
         return sum(word_counts) / len(word_counts)
     except FileNotFoundError: return 0
 
-def get_pos_freqs(tokens: list) -> Counter:
-    morph = pymorphy2.MorphAnalyzer()
-    pos_tags = [morph.parse(token)[0].tag.POS for token in tokens]
+# --- MODIFIED: `morph_analyzer` is now passed in ---
+def get_pos_freqs(tokens: list, morph_analyzer) -> Counter:
+    """Calculates POS tag frequencies using a pre-initialized analyzer."""
+    # The slow analyzer is NO LONGER initialized here
+    pos_tags = [morph_analyzer.parse(token)[0].tag.POS for token in tokens]
     return Counter(tag for tag in pos_tags if tag)
 
 # --- Main Execution Block ---
@@ -87,13 +89,26 @@ if __name__ == "__main__":
     
     print("--- Starting Feature Extraction ---")
 
+    # --- NEW: Download NLTK data (if needed) ---
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        print("NLTK 'punkt' data not found. Downloading...")
+        nltk.download('punkt')
+
+    # --- NEW: Initialize MorphAnalyzer ONCE ---
+    print("Initializing MorphAnalyzer (this may take a moment)...")
+    morph = pymorphy2.MorphAnalyzer()
+    print("Analyzer ready.")
+
     for i in book_indices:
         book_name = f"Ru{i}"
         print(f"\n--- Processing {book_name} ---")
         book_features = {}
 
-        # Part 1: Process '_clean.txt' files
-        clean_file = f"{book_name}_clean.txt"
+        # --- Part 1: Process '_clean_lemmatized.txt' files ---
+        # --- FIXED: Updated filename ---
+        clean_file = f"{book_name}_clean_lemmatized.txt"
         tokens_with_stops = read_tokens_from_file(clean_file)
         if tokens_with_stops:
             print(f"Analyzing {clean_file}...")
@@ -109,8 +124,9 @@ if __name__ == "__main__":
                 'bigram_entropy': calculate_entropy(bigram_freqs, total_words - 1)
             })
 
-        # Part 2: Process '_clean_nostops.txt' files
-        nostops_file = f"{book_name}_clean_nostops.txt"
+        # --- Part 2: Process '_clean_lemmatized_nostops.txt' files ---
+        # --- FIXED: Updated filename ---
+        nostops_file = f"{book_name}_clean_lemmatized_nostops.txt"
         tokens_no_stops = read_tokens_from_file(nostops_file)
         if tokens_no_stops:
             print(f"Analyzing {nostops_file}...")
@@ -119,7 +135,8 @@ if __name__ == "__main__":
                 'unique_content_word_count': len(set(tokens_no_stops)),
                 'mfw_frequencies': Counter(tokens_no_stops).most_common(100),
                 'chunked_ttr': calculate_chunked_ttr(tokens_no_stops),
-                'pos_frequencies': get_pos_freqs(tokens_no_stops)
+                # --- FIXED: Pass the 'morph' analyzer in ---
+                'pos_frequencies': get_pos_freqs(tokens_no_stops, morph)
             })
 
         # Part 3: Process original '.txt' file

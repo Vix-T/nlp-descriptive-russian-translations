@@ -16,7 +16,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.manifold import spectral_embedding
 
 # --- 1. Load the Data ---
-# This function still loads files and creates basic labels ("Ru1", "Ru2"...)
 def load_corpus(filenames: list) -> (list, list):
     """
     Loads text content from a list of files.
@@ -34,27 +33,28 @@ def load_corpus(filenames: list) -> (list, list):
                 corpus_texts.append(f.read())
                 
                 # Create a clean label from the filename for plotting
-                label = os.path.basename(filepath).replace('_clean.txt', '')
+                label = os.path.basename(filepath).split('_clean_lemmatized.txt')[0]
                 labels.append(label)
                 print(f"Loaded: {filepath}")
                 
         return corpus_texts, labels
         
     except FileNotFoundError as e:
-        print(f"❌ ERROR: File not found.")
+        print(f"ERROR: File not found.")
         print(f"Details: {e}")
         return None, None
     except Exception as e:
-        print(f"❌ An unexpected error occurred during file loading: {e}")
+        print(f"An unexpected error occurred during file loading: {e}")
         return None, None
 
 def main():
+    # --- FIXED: Using the correct filenames from our pipeline ---
     filenames = [
-        "Ru1_clean.txt",
-        "Ru2_clean.txt",
-        "Ru3_clean.txt",
-        "Ru4_clean.txt",
-        "Ru5_clean.txt"
+        "Ru1_clean_lemmatized.txt",
+        "Ru2_clean_lemmatized.txt",
+        "Ru3_clean_lemmatized.txt",
+        "Ru4_clean_lemmatized.txt",
+        "Ru5_clean_lemmatized.txt"
     ]
 
     corpus, labels = load_corpus(filenames)
@@ -63,8 +63,7 @@ def main():
         print("Halting execution due to file loading error.")
         return
 
-    # --- THIS IS THE FIX (Part 2) ---
-    # We NOW overwrite the simple labels with the ones we want on the plot.
+    # Overwrite the simple labels with the ones we want on the plot.
     print("Overriding labels for publication plot...")
     labels = [
         "Ru-1911-Engelgardt",
@@ -76,6 +75,7 @@ def main():
 
     # --- 2. Vectorize the Corpus ---
     print("\n--- Step 2: Vectorizing Corpus (TF-IDF) ---")
+    # Using TF-IDF is a different (and valid) approach than our raw-count DTMs
     vectorizer = TfidfVectorizer()
     dtm = vectorizer.fit_transform(corpus)
     print(f"Document-Term Matrix (DTM) created with shape: {dtm.shape}")
@@ -134,7 +134,7 @@ def main():
         bbox_inches='tight'
     )
     
-    print(f"✅ Greyscale plot successfully saved as '{output_image_file}'")
+    print(f"Greyscale plot successfully saved as '{output_image_file}'")
     plt.show()
 
 if __name__ == "__main__":

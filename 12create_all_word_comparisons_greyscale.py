@@ -78,7 +78,7 @@ def create_all_words_heatmap(directory: str = '.'):
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
     plt.savefig('mfw_all_words_heatmap_greyscale.png')
-    print("✅ 'All Words' greyscale heatmap saved to mfw_all_words_heatmap_greyscale.png")
+    print("'All Words' greyscale heatmap saved to mfw_all_words_heatmap_greyscale.png")
 
 
 if __name__ == '__main__':

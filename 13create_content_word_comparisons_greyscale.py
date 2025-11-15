@@ -45,7 +45,7 @@ def create_mfw_heatmap(directory: str = '.'):
 
     df_long = pd.DataFrame(plot_data)
 
-    # --- NEW: Step 3: Calculate total frequency and reorder the data ---
+    # Step 3: Calculate total frequency and reorder the data
     # Create a list of words sorted by their total frequency (highest first)
     sorted_words = df_long.groupby('Word')['Frequency'].sum().sort_values(ascending=False).index
 
@@ -54,12 +54,11 @@ def create_mfw_heatmap(directory: str = '.'):
 
     # Reorder the rows of the grid according to our sorted list
     df_wide_sorted = df_wide.loc[sorted_words]
-    # --- END OF NEW SECTION ---
 
     # Step 4: Create the heatmap using the newly sorted data
     plt.figure(figsize=(12, 16))
     sns.heatmap(
-        df_wide_sorted,      # Use the sorted DataFrame here
+        df_wide_sorted,
         annot=True,
         fmt='g',
         cmap='Greys',
@@ -73,7 +72,7 @@ def create_mfw_heatmap(directory: str = '.'):
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
     plt.savefig('mfw_combined_heatmap_greyscale_sorted.png')
-    print("✅ Sorted greyscale heatmap saved to mfw_combined_heatmap_greyscale_sorted.png")
+    print("Sorted greyscale heatmap saved to mfw_combined_heatmap_greyscale_sorted.png")
 
 
 if __name__ == '__main__':
