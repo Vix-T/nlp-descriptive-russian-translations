@@ -8,16 +8,16 @@ source .venv/bin/activate
 
 # Step 2: Run Phase 1 & 2 (Data Prep)
 echo "Running 01 (Lemmatization)..."
-python 01dataprep_clean_lemmatize.py
+python 01dataprep_clean_lemmatize
 echo "Running 02 (Stopword Removal)..."
-python 02dataprep_removestopwords.py
+python 02dataprep_removestopwords
 echo "Running 03 (Feature Extraction)..."
-python 03feature_extraction.py
+python 03feature_extraction
 
 # Step 3: Run Phase 4 Prep script
-# This creates the input files in the 'conceptual-analysis/' folder
-echo "Running Python prep script (17mfinder-prep.py)..."
-python 17mfinder-prep.py
+echo "Running Python prep script (17create_conceptual_network)..."
+# --- THIS LINE IS UPDATED ---
+python 17create_conceptual_network
 
 # Step 4: Change to the output directory
 echo "Changing to 'conceptual-analysis' directory..."
@@ -31,11 +31,8 @@ do
         echo "------------------------------------------"
         echo "Processing $input_file..."
         
-        # Get the base name (e.g., "Ru1")
         output_name=$(basename "$input_file" _mfinder_input.txt)
         
-        # Run mfinder
-        # We use ../mfinder_mac/ because we are one directory deep
         ../mfinder_mac/mfinder "$input_file" -s 3 -r 100 -omem -f "${output_name}_conceptual_output"
         
         echo "Completed analysis for $output_name."
