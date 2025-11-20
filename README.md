@@ -11,18 +11,18 @@ The analysis is based on the following texts:
 * **Translations:** Five distinct Russian translations of *The Adventures of Huckleberry Finn*, published between 1911 and 1960, included in this repository as `Ru1.txt` through `Ru5.txt`.
 * **Source:** The English-language text, `En.txt`, is included for reference.
 
-## Methodology: The 25-Step Pipeline
+## Methodology: The 28-Step Pipeline
 
-The project workflow is organized into a pipeline of 25 scripts, separated into four distinct phases. The scripts are numbered to be run in logical order.
+The project workflow is organized into a pipeline of 28 scripts, separated into five distinct phases. The scripts are numbered to be run in logical order.
 
 ### Phase 1: Core Data Preparation
 
-**1. `01dataprep_clean_lemmatize`**
+**1. `01dataprep_clean_lemmatize.py`**
 * **Purpose:** Reads the raw `.txt` files, cleans them (lowercase, removes punctuation/numbers), and lemmatizes the text.
 * **Input:** `Ru1.txt`, `Ru2.txt`, ...
 * **Output:** `Ru1_clean_lemmatized.txt`, `Ru2_clean_lemmatized.txt`, ...
 
-**2. `02dataprep_removestopwords`**
+**2. `02dataprep_removestopwords.py`**
 * **Purpose:** Reads the lemmatized files from Step 1 and removes all common Russian stop words.
 * **Input:** `Ru1_clean_lemmatized.txt`, `Ru2_clean_lemmatized.txt`, ...
 * **Output:** `Ru1_clean_lemmatized_nostops.txt`, `Ru2_clean_lemmatized_nostops.txt`, ...
@@ -31,22 +31,22 @@ The project workflow is organized into a pipeline of 25 scripts, separated into 
 
 ### Phase 2: Feature & Matrix Generation
 
-**3. `03feature_extraction`**
+**3. `03feature_extraction.py`**
 * **Purpose:** Gathers a rich set of stylometric features (TTR, entropy, n-gram frequencies, POS counts, etc.) from all text files and saves them to a central `.json` file for each book.
 * **Input:** `Ru#.txt`, `Ru#_clean_lemmatized.txt`, `Ru#_clean_lemmatized_nostops.txt`
 * **Output:** `Ru1_features.json`, `Ru2_features.json`, ...
 
-**4. `04create_dtm`**
+**4. `04create_dtm.py`**
 * **Purpose:** Creates a Document-Term Matrix (DTM) using only the **content words** (no stop words) for Delta analysis.
 * **Input:** `Ru1_clean_lemmatized_nostops.txt`, `Ru2_clean_lemmatized_nostops.txt`, ...
 * **Output:** `dtm_content_words.csv`
 
-**5. `05create_dtm_with_stopwords`**
+**5. `05create_dtm_with_stopwords.py`**
 * **Purpose:** Creates a DTM using **all words** (including stop words) by reading the pre-calculated frequencies from the `.json` files.
 * **Input:** `Ru1_features.json`, `Ru2_features.json`, ...
 * **Output:** `dtm_all_words.csv`
 
-**6. `07create_feature_summary`**
+**6. `06create_feature_summary.py`**
 * **Purpose:** Reads the `.json` feature files and creates a single, high-level summary table (`.csv`) of the main numerical features (TTR, avg. sentence length, etc.).
 * **Input:** `Ru1_features.json`, `Ru2_features.json`, ...
 * **Output:** `stylometric_summary.csv`
@@ -55,112 +55,120 @@ The project workflow is organized into a pipeline of 25 scripts, separated into 
 
 ### Phase 3: Stylometric & Lexical Analysis
 
-**7. `08create_delta_analysis_greyscale`**
+**7. `07create_delta_analysis_greyscale.py`**
 * **Purpose:** Performs Burrows' Delta analysis on both DTMs and creates greyscale dendrograms (cluster trees) and heatmaps to visualize the results.
 * **Input:** `dtm_content_words.csv`, `dtm_all_words.csv`
 * **Output:** `delta_results_...csv`, `delta_cluster_...greyscale.png`, `delta_heatmap_...greyscale.png`
 
-**8. `09pca_matrices_greyscale`**
+**8. `08pca_matrices_greyscale.py`**
 * **Purpose:** Performs Principal Component Analysis (PCA) and Cosine Similarity analysis on both DTMs to create alternative visualizations of text similarity.
 * **Input:** `dtm_content_words.csv`, `dtm_all_words.csv`
 * **Output:** `pca_analysis_...greyscale.png`, `similarity_heatmap_...greyscale.png`
 
-**9. `10run_spectral_greyscale`**
+**9. `09run_spectral_greyscale.py`**
 * **Purpose:** Performs Spectral Embedding (another similarity analysis) using TF-IDF vectorization to create a 2D cluster plot.
 * **Input:** `Ru1_clean_lemmatized.txt`, `Ru2_clean_lemmatized.txt`, ...
 * **Output:** `spectral_embedding_plot_greyscale.png`
 
-**10. `11cosine_cluster_greyscale`**
+**10. `10cosine_cluster_greyscale.py`**
 * **Purpose:** Uses Cosine Distance (different from Delta) to perform a cluster analysis and generate greyscale dendrograms.
 * **Input:** `dtm_content_words.csv`, `dtm_all_words.csv`
 * **Output:** `cosine_cluster_...greyscale.png`
 
-**11. `12mfw_greyscale`**
+**11. `11mfw_greyscale.py`**
 * **Purpose:** Reads the `.json` files and creates 10 greyscale bar charts showing the Top 20 most frequent words (MFW) for each book (with and without stop words).
 * **Input:** `Ru1_features.json`, `Ru2_features.json`, ...
 * **Output:** `mfw_with_stopwords_...png`, `mfw_no_stopwords_...png` (10 files)
 
-**12. `13create_all_word_comparisons_greyscale`**
+**12. `12create_all_word_comparisons_greyscale.py`**
 * **Purpose:** Creates a "Word vs. Text" heatmap to compare the frequency of the Top 30 **all words** (including stop words) across all 5 translations.
 * **Input:** `Ru1_features.json`, `Ru2_features.json`, ...
 * **Output:** `mfw_all_words_heatmap_greyscale.png`
 
-**13. `14create_content_word_comparisons_greyscale`**
+**13. `13create_content_word_comparisons_greyscale.py`**
 * **Purpose:** Creates a "Word vs. Text" heatmap to compare the frequency of the Top **content words** across all 5 translations.
 * **Input:** `Ru1_features.json`, `Ru2_features.json`, ...
 * **Output:** `mfw_combined_heatmap_greyscale_sorted.png`
 
-**14. `15kw_index`**
+**14. `14kw_index.py`**
 * **Purpose:** Calculates two advanced lexical richness metrics (Yule's K and Honoré's W) that are not in the main feature set.
 * **Input:** `Ru1_clean_lemmatized_nostops.txt`, `Ru2_clean_lemmatized_nostops.txt`, ...
 * **Output:** `lexical_diversity_results.csv`
 
-**15. `16create_visualizations_greyscale`**
-* **Purpose:** Creates the final summary bar charts (TTR and Avg. Sentence Length) from the summary table.
+**15. `15create_visualizations_greyscale.py`**
+* **Purpose:** Creates the final summary bar charts (TTR, Entropy, and Avg. Sentence Length) from the summary table.
 * **Input:** `stylometric_summary.csv`
 * **Output:** `ttr_comparison_greyscale_labeled.png`, `sentence_length_comparison_greyscale_labeled.png`
 
-**16. `17create_pos_richness_analysis`**
-* **Purpose:** Performs a detailed Part-of-Speech (POS) analysis and also calculates TTR/Entropy, outputting the results as plots and a table image.
-* **Input:** `Ru#_clean_lemmatized.txt`, `Ru#_clean_lemmatized_nostops.txt`
+**16. `16create_pos_richness_analysis.py`**
+* **Purpose:** Performs a detailed Part-of-Speech (POS) analysis on **Raw** text and TTR/Entropy on **Lemmatized** text, outputting the results as plots and a table image.
+* **Input:** `Ru#.txt`, `Ru#_clean_lemmatized_nostops.txt`
 * **Output:** `diagnostics/Ru#_pos_distribution.png`, `diagnostics/diagnostic_stats_table.png`
-
-**17. `26plot_greyscale_mfw_ranks`**
-* **Purpose:** Creates a "Word vs. Text" heatmap showing the *rank* (1st, 2nd, 3rd...) of top content words, rather than their raw frequency.
-* **Input:** `Ru1_clean_lemmatized_nostops.txt`, `Ru2_clean_lemmatized_nostops.txt`, ...
-* **Output:** `mfw_content_words_heatmap_ranked_greyscale.png`
 
 ---
 
-### Phase 4: Network Analysis (mfinder Pipeline)
+### Phase 4: Network Analysis (Conceptual)
 
-**18. `17create_conceptual_network`**
+**17. `17create_conceptual_network.py`**
 * **Purpose:** Creates network input files for `mfinder` based on **lemmatized** bigrams (a "conceptual" network).
 * **Input:** `Ru1_features.json`, `Ru2_features.json`, ...
 * **Output:** `conceptual-analysis/Ru#_mfinder_input.txt`, `conceptual-analysis/Ru#_word_id_mapping.json`
 
-**19. `18create_syntactic_network`**
-* **Purpose:** Creates network input files for `mfinder` based on **unlemmatized** bigrams (a "syntactic" network).
-* **Input:** `Ru1.txt`, `Ru2.txt`, ...
-* **Output:** `syntactic-analysis/Ru#_syntactic_input.txt`, `syntactic-analysis/Ru#_syntactic_mapping.json`
-
-**20. `19run_conceptual_mfinder.sh`**
-* **Purpose:** Master script that runs the *entire* prep pipeline (`01`, `02`, `03`, `17`), then automatically runs `mfinder` on the conceptual inputs.
+**18. `18run_conceptual_mfinder.sh`**
+* **Purpose:** Master shell script that runs the *entire* prep pipeline (`01`, `02`, `03`, `17`), then automatically runs the `mfinder` tool on the conceptual inputs.
 * **Action:** Runs scripts `01`, `02`, `03`, `17`, then runs `mfinder`.
 * **Output:** `conceptual-analysis/Ru#_conceptual_output_OUT.txt`, `conceptual-analysis/Ru#_conceptual_output_MEMBERS.txt`
 
-**21. `20run_syntactic_mfinder.sh`**
-* **Purpose:** Master script that runs `18create_syntactic_network`, then automatically runs the `mfinder` tool on all of its outputs.
-* **Action:** Runs script `18`, then runs `mfinder`.
-* **Output:** `syntactic-analysis/Ru#_syntactic_output_OUT.txt`, `syntactic-analysis/Ru#_syntactic_output_MEMBERS.txt`
-
-**22. `22parse_mfinder_results_syntactic`**
-* **Purpose:** Reads the numeric `mfinder` results for the **syntactic** network and translates them back into human-readable word-based reports.
-* **Input:** `syntactic-analysis/Ru#_syntactic_output_MEMBERS.txt`, `syntactic-analysis/Ru#_syntactic_mapping.json`
-* **Output:** `syntactic-analysis/Ru#_syntactic_analysis_report.txt`
-
-**23. `23parse_mfinder_results_conceptual`**
-* **Purpose:** Reads the numeric `mfinder` results for the **conceptual** network and translates them back into human-readable word-based reports.
+**19. `19parse_mfinder_results.py`**
+* **Purpose:** Reads the numeric `mfinder` results for the conceptual network and translates them back into human-readable word-based reports.
 * **Input:** `conceptual-analysis/Ru#_conceptual_output_MEMBERS.txt`, `conceptual-analysis/Ru#_word_id_mapping.json`
 * **Output:** `conceptual-analysis/Ru#_conceptual_analysis_report.txt`
 
-**24. `24motif_barchart`**
-* **Purpose:** Creates a greyscale grouped bar chart comparing the Z-scores (significance) of key motifs from the **syntactic** network.
-* **Input:** `syntactic-analysis/Ru#_syntactic_output_OUT.txt`
-* **Output:** `key_motifs_grouped_bar_greyscale.png`
+**20. `20motif_barchart.py`**
+* **Purpose:** Creates a greyscale grouped bar chart comparing the normalized Significance Profile (SP) scores of key motifs.
+* **Input:** `conceptual-analysis/Ru#_conceptual_output_OUT.txt`
+* **Output:** `key_motifs_grouped_bar_greyscale_normalized.png`
 
-**25. `25z-score_heatmap_greyscale`**
-* **Purpose:** Creates a comprehensive greyscale heatmap of the Z-scores for *all* motifs from the **syntactic** network.
-* **Input:** `syntactic-analysis/Ru#_syntactic_output_OUT.txt`
+**21. `21z-score_heatmap_greyscale.py`**
+* **Purpose:** Creates a heatmap of **Raw Z-Scores** to highlight statistical significance (marked with `*` for |Z| > 2.0).
+* **Input:** `conceptual-analysis/Ru#_conceptual_output_OUT.txt`
 * **Output:** `heatmap_greyscale_significant.png`
+
+**22. `22create_significance_profile.py`**
+* **Purpose:** Creates a heatmap of **L2-Normalized Z-Scores** (Significance Profile) to compare the "shape" of the network fingerprints across texts of different sizes.
+* **Input:** `conceptual-analysis/Ru#_conceptual_output_OUT.txt`
+* **Output:** `heatmap_significance_profile_greyscale.png`
+
+---
+
+### Phase 5: Rankings & Advanced Metrics
+
+**23. `23plot_greyscale_pos_ranks.py`**
+* **Purpose:** Creates a heatmap showing the *rank* (1st, 2nd...) of the Top 10 Part-of-Speech tags, allowing for length-independent grammatical comparison.
+* **Input:** `Ru1_features.json`, `Ru2_features.json`, ...
+* **Output:** `pos_rank_heatmap_greyscale.png`
+
+**24. `24centrality_rankings.py`**
+* **Purpose:** Calculates **Betweenness Centrality** on the full conceptual network to identify "Bridge Words" (connectors) and visualizes the Top 20.
+* **Input:** `conceptual-analysis/Ru#_mfinder_input.txt`
+* **Output:** `conceptual-analysis/Ru#_betweenness_rankings.csv`, `conceptual-analysis/Ru#_betweenness_top20_greyscale.png`
+
+**25. `25plot_greyscale_mfw_ranks.py`**
+* **Purpose:** Creates a heatmap showing the *rank* of top content words.
+* **Input:** `Ru1_clean_lemmatized_nostops.txt`, `Ru2_clean_lemmatized_nostops.txt`, ...
+* **Output:** `mfw_content_words_heatmap_ranked_greyscale.png`
+
+**26. `26plot_betweenness_ranks.py`**
+* **Purpose:** Creates a ranked heatmap of the top "Bridge Words" across all translations for direct structural comparison.
+* **Input:** `conceptual-analysis/Ru#_betweenness_rankings.csv`
+* **Output:** `conceptual-analysis/betweenness_rank_heatmap_greyscale.png`
 
 ## Repository Structure
 
 * `Ru#.txt`, `En.txt`: The raw, original source text files.
-* `01...` - `25...`: The Python scripts and shell scripts that form the core pipeline, numbered in their logical order.
+* `01...` - `26...`: The Python scripts and shell scripts that form the core pipeline, numbered in their logical order.
 * `.gitignore`: Specifies all generated files (e.g., `*.csv`, `*.json`, `*.png`, `.venv/`) to be ignored by Git.
-* `conceptual-analysis/`: Folder containing all inputs, outputs, and reports for the conceptual network analysis.
-* `syntactic-analysis/`: Folder containing all inputs, outputs, and reports for the syntactic network analysis.
+* `conceptual-analysis/`: Folder containing all inputs, outputs, and reports for the network analysis.
 * `diagnostics/`: Folder containing plot outputs from the POS & richness analysis (script `16`).
 * `mfinder_mac/`: The `mfinder` executable.
 
@@ -172,27 +180,26 @@ The project workflow is organized into a pipeline of 25 scripts, separated into 
     * Activate it: `source .venv/bin/activate`
     * Install all required libraries:
         ```bash
-        pip install pandas numpy scipy scikit-learn matplotlib seaborn nltk pymorphy2
+        pip install pandas numpy scipy scikit-learn matplotlib seaborn nltk pymorphy2 networkx
         ```
     * Download NLTK data (run in an active `venv`):
         ```bash
         python3 -c "import nltk; nltk.download('stopwords'); nltk.download('punkt_tab')"
         ```
 
-2.  **Run the Full mfinder Analysis:**
-    The two master shell scripts will run the entire Phase 4 pipeline, including all necessary prep steps. You must make them executable first:
+2.  **Run the Full Pipeline:**
+    The master shell script will run the entire pipeline (Phases 1-4), including all prep steps. You must make it executable first:
     ```bash
-    chmod +x 19run_conceptual_mfinder.sh
-    chmod +x 20run_syntactic_mfinder.sh
+    chmod +x 18run_conceptual_mfinder.sh
     ```
-    Then, run them:
+    Then, run it:
     ```bash
-    ./19run_conceptual_mfinder.sh
-    ./20run_syntactic_mfinder.sh
+    ./18run_conceptual_mfinder.sh
     ```
 
-3.  **Run Other Analyses:**
-    All other scripts (e.g., `07create_delta_analysis_greyscale`) can be run individually, as long as their prerequisite files (from Phases 1 & 2) exist.
+3.  **Run Phase 5 (Advanced Metrics):**
+    Run the final ranking scripts individually:
     ```bash
-    python 07create_delta_analysis_greyscale
+    python 24centrality_rankings.py
+    python 26plot_betweenness_ranks.py
     ```
