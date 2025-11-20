@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """
-Creates a greyscale heatmap of REAL motif Z-scores.
+Creates a greyscale heatmap of REAL motif Z-scores from the Conceptual Network.
+Displays Raw Z-Scores to highlight statistical significance.
 
-This version adds an asterisk (*) to all statistically significant
-cells (Z-Score > 2.0 or < -2.0).
+Features:
+- Adds an asterisk (*) to cells where |Z-Score| > 2.0
 """
 
 import seaborn as sns
@@ -13,7 +14,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import os
-import re # We need re for the parser
+import re
 
 def parse_zscores_from_file(filepath: str) -> dict:
     """
@@ -23,7 +24,7 @@ def parse_zscores_from_file(filepath: str) -> dict:
     data_block_found = False
     
     if not os.path.exists(filepath):
-        print(f"❌ ERROR: File not found at '{filepath}'")
+        print(f"ERROR: File not found at '{filepath}'")
         return data
 
     try:
@@ -41,7 +42,7 @@ def parse_zscores_from_file(filepath: str) -> dict:
                 
                 # 2. Once we've found that signal, start looking for data
                 if data_block_found:
-                    # Skip header lines (like 'MOTIF NREAL...')
+                    # Skip header lines
                     if not line[0].isdigit():
                         continue
                     
@@ -55,21 +56,18 @@ def parse_zscores_from_file(filepath: str) -> dict:
                         continue
                         
     except Exception as e:
-        print(f"❌ ERROR: Failed to parse {filepath}. Reason: {e}")
+        print(f"ERROR: Failed to parse {filepath}. Reason: {e}")
 
     return data
 
 def main():
-    # --- 1. Load the REAL Data ---
+    # --- 1. Load the REAL Data (Conceptual) ---
     
-    subdirectory = "syntactic-analysis"
-    base_filenames = [
-        "Ru1_syntactic_output_OUT.txt",
-        "Ru2_syntactic_output_OUT.txt",
-        "Ru3_syntactic_output_OUT.txt",
-        "Ru4_syntactic_output_OUT.txt",
-        "Ru5_syntactic_output_OUT.txt"
-    ]
+    # FIXED: Pointing to the correct directory
+    subdirectory = "conceptual-analysis"
+    
+    # FIXED: Pointing to the correct filenames
+    base_filenames = [f"Ru{i}_mfinder_input_OUT.txt" for i in range(1, 6)]
     files_to_process = [os.path.join(subdirectory, f) for f in base_filenames]
     
     index_labels = [
@@ -80,25 +78,24 @@ def main():
         'Ru-1960-Daruzes'
     ]
     
-    print("--- Parsing Z-Score data from files... ---")
+    print("--- Parsing Z-Score data (Conceptual) ... ---")
     
     data_rows = []
     for label, filepath in zip(index_labels, files_to_process):
         motif_data = parse_zscores_from_file(filepath)
         if not motif_data:
-            print(f"⚠️ Warning: No data extracted from {filepath}.")
+            print(f"Warning: No data extracted from {filepath}.")
             continue
         data_rows.append(motif_data)
 
     if not data_rows:
-        print("❌ ERROR: No data was extracted from any file. Halting.")
+        print("ERROR: No data was extracted from any file. Halting.")
         return
 
     # Create the DataFrame with the numeric data
     df_zscores = pd.DataFrame(data_rows, index=index_labels)
     
-    # --- 2. THIS IS THE NEW LOGIC ---
-    # Create a second DataFrame for the text annotations
+    # --- 2. Create Significance Annotations ---
     print("--- Creating significance annotations... ---")
     df_annot = pd.DataFrame(index=df_zscores.index, columns=df_zscores.columns)
     
@@ -107,14 +104,12 @@ def main():
         for c in df_zscores.columns:
             z_score = df_zscores.loc[r, c]
             
-            # Check if the value is "significant"
+            # Check if the value is "significant" (Standard Z-score threshold)
             if abs(z_score) > 2.0:
                 df_annot.loc[r, c] = f"{z_score:.2f}*" # Add asterisk
             else:
                 df_annot.loc[r, c] = f"{z_score:.2f}"
     
-    # --- END OF NEW LOGIC ---
-
     # Rename columns to be "Motif X" for the plot
     df_zscores = df_zscores.rename(columns={
         col: f"Motif {col}" for col in df_zscores.columns
@@ -124,23 +119,22 @@ def main():
     
     print("--- Data loaded successfully. Generating heatmap... ---")
 
-    # --- 3. Draw the Heatmap (with updated parameters) ---
+    # --- 3. Draw the Heatmap ---
     
     plt.figure(figsize=(14, 8))
     
     sns.heatmap(
-        df_zscores,        # The numeric data for the colors
+        df_zscores,        # The numeric data (Raw Z-Scores) for the colors
         cmap="Greys",
-        annot=df_annot,    # The text data for the annotations
+        annot=df_annot,    # The text data with asterisks
         fmt="",            # MUST be empty, as we pre-formatted our text
         linewidths=.5,
-        cbar_kws={'label': 'Z-Score'}
+        cbar_kws={'label': 'Raw Z-Scores: * = |Z-Score| > 2.0 (Significant)'}
     )
 
     # --- 4. Customize Plot Labels ---
     
-    # Add a note to the title about the asterisk
-    plt.title('Syntactic Motif "Fingerprints" (Z-Scores)\n* = |Z-Score| > 2.0', fontsize=16, pad=20)
+    plt.title('Over and Under Representation of Motifs by Translation', fontsize=16, pad=20)
     plt.ylabel('Translation', fontsize=12)
     plt.xlabel('Motif ID', fontsize=12)
     plt.yticks(rotation=0) 
@@ -150,9 +144,9 @@ def main():
     output_file = 'heatmap_greyscale_significant.png'
     try:
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
-        print(f"✅ Heatmap successfully saved as '{output_file}'")
+        print(f"Heatmap successfully saved as '{output_file}'")
     except Exception as e:
-        print(f"❌ ERROR saving file: {e}")
+        print(f"ERROR saving file: {e}")
     
     plt.close()
 
