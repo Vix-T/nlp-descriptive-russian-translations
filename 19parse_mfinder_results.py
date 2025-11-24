@@ -73,9 +73,9 @@ if __name__ == "__main__":
     ALL_MOTIF_IDS = ['6', '12', '14', '36', '38', '46', '74', '78', '98', '102', '108', '110', '238']
     
     # --- FIXED: Define the subfolder ---
-    data_folder = pathlib.Path("conceptual-analysis")
+    data_folder = pathlib.Path("mfinder-analysis")
 
-    print("--- Starting Conceptual Analysis Report Generation ---")
+    print("--- Starting mfinder Analysis Report Generation ---")
     
     for i in range(1, 6):
         book_id = f"Ru{i}"
@@ -83,8 +83,8 @@ if __name__ == "__main__":
 
         # --- FIXED: Update all file paths to use the subfolder ---
         word_map_file = data_folder / f"{book_id}_word_id_mapping.json"
-        members_file = data_folder / f"{book_id}_conceptual_output_MEMBERS.txt"
-        output_file = data_folder / f"{book_id}_conceptual_analysis_report.txt"
+        members_file = data_folder / f"{book_id}_mfinder_output_MEMBERS.txt"
+        output_file = data_folder / f"{book_id}_mfinder_analysis_report.txt"
         # --- END OF FIXES ---
 
         id_to_word_map = load_word_map(word_map_file)

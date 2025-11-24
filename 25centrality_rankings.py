@@ -57,8 +57,8 @@ def load_network_and_map(input_file: pathlib.Path, map_file: pathlib.Path):
 
 def main():
     # --- Setup ---
-    # We look in the conceptual-analysis folder
-    data_folder = pathlib.Path('conceptual-analysis')
+    # We look in the mfinder-analysis folder
+    data_folder = pathlib.Path('mfinder-analysis')
     
     translation_map = {
         'Ru1': 'Ru-1911-Engelgardt',

@@ -5,12 +5,12 @@ def create_mfinder_input_files(directory: str = '.'):
     """
     Reads feature files, converts bigram data to mfinder's edge list format,
     REMOVING SELF-LOOPS, and saves the corresponding input and mapping files
-    into the 'conceptual-analysis' sub-directory.
+    into the 'mfinder-analysis' sub-directory.
     """
-    print("--- Preparing input files for mfinder (Conceptual Network) ---")
+    print("--- Preparing input files for mfinder (mfinder Network) ---")
     
     # --- NEW: Define and create the output directory ---
-    output_dir = "conceptual-analysis"
+    output_dir = "mfinder-analysis"
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
         print(f"Created directory: {output_dir}")

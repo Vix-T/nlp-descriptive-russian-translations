@@ -57,9 +57,9 @@ def parse_zscores_from_file(filepath: str) -> dict:
     return data
 
 def main():
-    # --- 1. Load the Z-Score Data (Conceptual) ---
+    # --- 1. Load the Z-Score Data (mfinder) ---
     
-    subdirectory = "conceptual-analysis"
+    subdirectory = "mfinder-analysis"
     base_filenames = [f"Ru{i}_mfinder_input_OUT.txt" for i in range(1, 6)]
     files_to_process = [os.path.join(subdirectory, f) for f in base_filenames]
     
@@ -99,7 +99,7 @@ def main():
     df_sp = pd.DataFrame(sp_data, index=df_zscores.index, columns=df_zscores.columns)
 
     # Save to CSV for reference
-    sp_output_csv = 'significance_profile_conceptual.csv'
+    sp_output_csv = 'significance_profile_mfinder.csv'
     df_sp.to_csv(sp_output_csv)
     print(f"Normalized Significance Profile saved to '{sp_output_csv}'")
     

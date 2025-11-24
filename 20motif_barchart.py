@@ -50,7 +50,7 @@ def parse_zscores_from_file(filepath: pathlib.Path) -> dict:
 
 def main():
     # --- 1. Setup ---
-    data_folder = pathlib.Path('conceptual-analysis')
+    data_folder = pathlib.Path('mfinder-analysis')
     
     filenames = [f'Ru{i}_mfinder_input_OUT.txt' for i in range(1, 6)]
     

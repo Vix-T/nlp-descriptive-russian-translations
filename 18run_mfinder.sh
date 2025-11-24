@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "--- STARTING FULL CONCEPTUAL NETWORK ANALYSIS ---"
+echo "--- STARTING FULL NETWORK ANALYSIS ---"
 
 # Step 1: Activate Python Environment
 echo "Activating Python virtual environment..."
@@ -15,13 +15,12 @@ echo "Running 03 (Feature Extraction)..."
 python 03feature_extraction
 
 # Step 3: Run Phase 4 Prep script
-echo "Running Python prep script (17create_conceptual_network)..."
-# --- THIS LINE IS UPDATED ---
-python 17create_conceptual_network
+echo "Running Python prep script (17create_mfinder_network)..."
+python 17create_mfinder_network
 
 # Step 4: Change to the output directory
-echo "Changing to 'conceptual-analysis' directory..."
-cd conceptual-analysis/
+echo "Changing to 'mfinder-analysis' directory..."
+cd mfinder-analysis/
 
 # Step 5: Loop through and run mfinder on each input file
 echo "Running mfinder on all '_mfinder_input.txt' files..."
@@ -33,7 +32,7 @@ do
         
         output_name=$(basename "$input_file" _mfinder_input.txt)
         
-        ../mfinder_mac/mfinder "$input_file" -s 3 -r 100 -omem -f "${output_name}_conceptual_output"
+        ../mfinder_mac/mfinder "$input_file" -s 3 -r 100 -omem -f "${output_name}_output"
         
         echo "Completed analysis for $output_name."
     fi
@@ -42,4 +41,4 @@ done
 # Step 6: Return to the main project directory
 cd ..
 echo "------------------------------------------"
-echo "All conceptual mfinder analyses complete."
+echo "All mfinder analyses complete."

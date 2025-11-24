@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+mfinder#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -27,7 +27,7 @@ def load_tokens_from_file(filepath: pathlib.Path) -> list:
 def main():
     # --- 1. Define Data and File Locations ---
     
-    # This script reads from the MAIN directory, not 'conceptual-analysis'
+    # This script reads from the MAIN directory, not 'mfinder-analysis'
     data_folder = pathlib.Path('.') 
     
     # Input: The "Content Only" files from Phase 1

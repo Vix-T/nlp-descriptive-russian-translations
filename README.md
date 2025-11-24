@@ -107,36 +107,36 @@ The project workflow is organized into a pipeline of 28 scripts, separated into 
 
 ---
 
-### Phase 4: Network Analysis (Conceptual)
+### Phase 4: Network Analysis
 
 **17. `17create_mfinder_network.py`**
-* **Purpose:** Creates network input files for `mfinder` based on **lemmatized** bigrams (a "conceptual" network).
+* **Purpose:** Creates network input files for `mfinder` based on **lemmatized** dataset that still includes stopwords.
 * **Input:** `Ru1_features.json`, `Ru2_features.json`, ...
-* **Output:** `conceptual-analysis/Ru#_mfinder_input.txt`, `conceptual-analysis/Ru#_word_id_mapping.json`
+* **Output:** `mfinder-analysis/Ru#_mfinder_input.txt`, `mfinder-analysis/Ru#_word_id_mapping.json`
 
 **18. `18run_mfinder.sh`**
-* **Purpose:** Master shell script that runs the *entire* prep pipeline (`01`, `02`, `03`, `17`), then automatically runs the `mfinder` tool on the conceptual inputs.
+* **Purpose:** Master shell script that runs the *entire* prep pipeline (`01`, `02`, `03`, `17`), then automatically runs the `mfinder` tool on the inputs that have been structured for mfinder.
 * **Action:** Runs scripts `01`, `02`, `03`, `17`, then runs `mfinder`.
-* **Output:** `conceptual-analysis/Ru#_conceptual_output_OUT.txt`, `conceptual-analysis/Ru#_conceptual_output_MEMBERS.txt`
+* **Output:** `mfinder-analysis/Ru#_mfinder_output_OUT.txt`, `mfinder-analysis/Ru#_mfinder_output_MEMBERS.txt`
 
 **19. `19parse_mfinder_results.py`**
-* **Purpose:** Reads the numeric `mfinder` results for the conceptual network and translates them back into human-readable word-based reports.
-* **Input:** `conceptual-analysis/Ru#_conceptual_output_MEMBERS.txt`, `conceptual-analysis/Ru#_word_id_mapping.json`
-* **Output:** `conceptual-analysis/Ru#_conceptual_analysis_report.txt`
+* **Purpose:** Reads the numeric `mfinder` results for the mfinder network and translates them back into human-readable word-based reports.
+* **Input:** `mfinder-analysis/Ru#_output_MEMBERS.txt`, `mfinder-analysis/Ru#_word_id_mapping.json`
+* **Output:** `mfinder-analysis/Ru#_analysis_report.txt`
 
 **20. `20motif_barchart.py`**
 * **Purpose:** Creates a greyscale grouped bar chart comparing the normalized Significance Profile (SP) scores of key motifs.
-* **Input:** `conceptual-analysis/Ru#_conceptual_output_OUT.txt`
+* **Input:** `mfinder-analysis/Ru#_mfinder_output_OUT.txt`
 * **Output:** `key_motifs_grouped_bar_greyscale_normalized.png`
 
 **21. `21z-score_heatmap_greyscale.py`**
 * **Purpose:** Creates a heatmap of **Raw Z-Scores** to highlight statistical significance (marked with `*` for |Z| > 2.0).
-* **Input:** `conceptual-analysis/Ru#_conceptual_output_OUT.txt`
+* **Input:** `mfinder-analysis/Ru#_mfinder_output_OUT.txt`
 * **Output:** `heatmap_greyscale_significant.png`
 
 **22. `22create_significance_profile.py`**
 * **Purpose:** Creates a heatmap of **L2-Normalized Z-Scores** (Significance Profile) to compare the "shape" of the network fingerprints across texts of different sizes.
-* **Input:** `conceptual-analysis/Ru#_conceptual_output_OUT.txt`
+* **Input:** `mfinder-analysis/Ru#_mfinder_output_OUT.txt`
 * **Output:** `heatmap_significance_profile_greyscale.png`
 
 ---
@@ -149,9 +149,9 @@ The project workflow is organized into a pipeline of 28 scripts, separated into 
 * **Output:** `pos_rank_heatmap_greyscale.png`
 
 **24. `24centrality_rankings.py`**
-* **Purpose:** Calculates **Betweenness Centrality** on the full conceptual network to identify "Bridge Words" (connectors) and visualizes the Top 20.
-* **Input:** `conceptual-analysis/Ru#_mfinder_input.txt`
-* **Output:** `conceptual-analysis/Ru#_betweenness_rankings.csv`, `conceptual-analysis/Ru#_betweenness_top20_greyscale.png`
+* **Purpose:** Calculates **Betweenness Centrality** on the full mfinder network to identify "Bridge Words" (connectors) and visualizes the Top 20.
+* **Input:** `mfinder-analysis/Ru#_mfinder_input.txt`
+* **Output:** `mfinder-analysis/Ru#_betweenness_rankings.csv`, `mfinder-analysis/Ru#_betweenness_top20_greyscale.png`
 
 **25. `25plot_greyscale_mfw_ranks.py`**
 * **Purpose:** Creates a heatmap showing the *rank* of top content words.
@@ -160,15 +160,15 @@ The project workflow is organized into a pipeline of 28 scripts, separated into 
 
 **26. `26plot_betweenness_ranks.py`**
 * **Purpose:** Creates a ranked heatmap of the top "Bridge Words" across all translations for direct structural comparison.
-* **Input:** `conceptual-analysis/Ru#_betweenness_rankings.csv`
-* **Output:** `conceptual-analysis/betweenness_rank_heatmap_greyscale.png`
+* **Input:** `mfinder-analysis/Ru#_betweenness_rankings.csv`
+* **Output:** `mfinder-analysis/betweenness_rank_heatmap_greyscale.png`
 
 ## Repository Structure
 
 * `Ru#.txt`, `En.txt`: The raw, original source text files.
 * `01...` - `26...`: The Python scripts and shell scripts that form the core pipeline, numbered in their logical order.
 * `.gitignore`: Specifies all generated files (e.g., `*.csv`, `*.json`, `*.png`, `.venv/`) to be ignored by Git.
-* `conceptual-analysis/`: Folder containing all inputs, outputs, and reports for the network analysis.
+* `mfinder-analysis/`: Folder containing all inputs, outputs, and reports for the network analysis.
 * `diagnostics/`: Folder containing plot outputs from the POS & richness analysis (script `16`).
 * `mfinder_mac/`: The `mfinder` executable.
 
@@ -190,11 +190,11 @@ The project workflow is organized into a pipeline of 28 scripts, separated into 
 2.  **Run the Full Pipeline:**
     The master shell script will run the entire pipeline (Phases 1-4), including all prep steps. You must make it executable first:
     ```bash
-    chmod +x 18run_conceptual_mfinder.sh
+    chmod +x 18run_mfinder_mfinder.sh
     ```
     Then, run it:
     ```bash
-    ./18run_conceptual_mfinder.sh
+    ./18run_mfinder_mfinder.sh
     ```
 
 3.  **Run Phase 5 (Advanced Metrics):**

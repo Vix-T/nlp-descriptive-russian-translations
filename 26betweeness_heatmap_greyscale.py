@@ -14,8 +14,8 @@ import pathlib
 
 def main():
     # --- 1. Setup ---
-    # Look in the conceptual-analysis folder where we saved the CSVs
-    data_folder = pathlib.Path('conceptual-analysis')
+    # Look in the mfinder-analysis folder where we saved the CSVs
+    data_folder = pathlib.Path('mfinder-analysis')
     
     translation_map = {
         'Ru1': 'Ru-1911-Engelgardt',

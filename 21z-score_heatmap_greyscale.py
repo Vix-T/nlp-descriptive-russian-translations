@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Creates a greyscale heatmap of REAL motif Z-scores from the Conceptual Network.
+Creates a greyscale heatmap of REAL motif Z-scores from the mfinder Network.
 Displays Raw Z-Scores to highlight statistical significance.
 
 Features:
@@ -61,10 +61,10 @@ def parse_zscores_from_file(filepath: str) -> dict:
     return data
 
 def main():
-    # --- 1. Load the REAL Data (Conceptual) ---
+    # --- 1. Load the REAL Data (mfinder) ---
     
     # FIXED: Pointing to the correct directory
-    subdirectory = "conceptual-analysis"
+    subdirectory = "mfinder-analysis"
     
     # FIXED: Pointing to the correct filenames
     base_filenames = [f"Ru{i}_mfinder_input_OUT.txt" for i in range(1, 6)]
@@ -78,7 +78,7 @@ def main():
         'Ru-1960-Daruzes'
     ]
     
-    print("--- Parsing Z-Score data (Conceptual) ... ---")
+    print("--- Parsing Z-Score data (mfinder) ... ---")
     
     data_rows = []
     for label, filepath in zip(index_labels, files_to_process):
