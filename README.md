@@ -11,7 +11,7 @@ The analysis is based on the following texts:
 * **Translations:** Five distinct Russian translations of *The Adventures of Huckleberry Finn*, published between 1911 and 1960, included in this repository as `Ru1.txt` through `Ru5.txt`.
 * **Source:** The English-language text, `En.txt`, is included for reference.
 
-## Methodology: The 28-Step Pipeline
+## Methodology: The 26-Step Pipeline
 
 The project workflow is organized into a pipeline of 28 scripts, separated into five distinct phases. The scripts are numbered to be run in logical order.
 
@@ -109,12 +109,12 @@ The project workflow is organized into a pipeline of 28 scripts, separated into 
 
 ### Phase 4: Network Analysis (Conceptual)
 
-**17. `17create_conceptual_network.py`**
+**17. `17create_mfinder_network.py`**
 * **Purpose:** Creates network input files for `mfinder` based on **lemmatized** bigrams (a "conceptual" network).
 * **Input:** `Ru1_features.json`, `Ru2_features.json`, ...
 * **Output:** `conceptual-analysis/Ru#_mfinder_input.txt`, `conceptual-analysis/Ru#_word_id_mapping.json`
 
-**18. `18run_conceptual_mfinder.sh`**
+**18. `18run_mfinder.sh`**
 * **Purpose:** Master shell script that runs the *entire* prep pipeline (`01`, `02`, `03`, `17`), then automatically runs the `mfinder` tool on the conceptual inputs.
 * **Action:** Runs scripts `01`, `02`, `03`, `17`, then runs `mfinder`.
 * **Output:** `conceptual-analysis/Ru#_conceptual_output_OUT.txt`, `conceptual-analysis/Ru#_conceptual_output_MEMBERS.txt`

@@ -101,7 +101,7 @@ def main():
         cbar_kws={'label': 'Betweenness Rank (1 = Most Central)'}
     )
 
-    plt.title('Comparative Rank of Top Bridge Words\nBetweeness Centrality Ranking', fontsize=16, pad=20)
+    plt.title('Comparative Rank of Top Bridge Words\nBetweenness Centrality Ranking', fontsize=16, pad=20)
     plt.ylabel('Translation', fontsize=12)
     plt.xlabel('Bridge Words (Sorted by Consistency)', fontsize=12)
     plt.yticks(rotation=0)
